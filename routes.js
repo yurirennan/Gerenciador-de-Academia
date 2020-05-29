@@ -7,7 +7,7 @@ routes.get("/", function (request, response) {
 })
 
 routes.get("/instrutores", function (request, response) {
-    return response.render("instructors/index.html")
+    return response.render("instructors/index.njk")
 })
 
 routes.get("/membros", function (request, response) {
