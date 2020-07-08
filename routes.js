@@ -1,4 +1,5 @@
 const express = require("express");
+const instrutores = require("./instrutores");
 
 const routes = express.Router();
 
@@ -10,9 +11,9 @@ routes.get("/instrutores", function (request, response) {
     return response.render("instructors/index.njk");
 });
 
-routes.post("/instrutores", function (req, res) {
-    return res.send("Recebido");
-});
+//routes.get(("/instrutores/:id"), instrutores.show);
+
+routes.post("/instrutores", instrutores.post);
 
 
 routes.get(("/instrutores/cadastro"), (req, res) => {

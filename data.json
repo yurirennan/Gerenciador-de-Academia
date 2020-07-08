@@ -1,0 +1,22 @@
+{
+    "instructors": [
+        {
+            "id": 1,
+            "avatar_url": "https://google.com.br",
+            "name": "KR Renyu",
+            "birth": 913420800000,
+            "gender": "F",
+            "services": "Manutenção De Equipamentos, Crossfit",
+            "created_at": 1594217401608
+        },
+        {
+            "id": 2,
+            "avatar_url": "https://google.com.br",
+            "name": "Yuri Rennan Campos Silva",
+            "birth": 913420800000,
+            "gender": "M",
+            "services": "Personal",
+            "created_at": 1594221823999
+        }
+    ]
+}
