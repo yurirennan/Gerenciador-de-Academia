@@ -8,45 +8,8 @@
 
             <h3>Cadastro Novo Instrutor</h3>
 
-            <div class="item">
-                <div>Avatar url</div>
-                <div>
-                    <input type="url" name="avatar_url" placeholder="https://">
-                </div>
-            </div>
+            {% include "instructors/fields.njk" %}
 
-            <div class="item">
-                <div>Nome</div>
-                <div>
-                    <input type="text" name="name" placeholder="Nome do instrutor">
-                </div>
-            </div>
-
-            <div class="item">
-                <div>Data de Nascimento</div>
-                <div>
-                    <input type="date" name="birth">
-                </div>
-            </div>
-
-            <div class="item">
-                <div>Sexo</div>
-                <div>
-                    <span>
-                        <input type="radio" name="gender" value="M" checked="checked">Masculino</span>
-                    <span>
-                        <input type="radio" name="gender" value="F">Feminino</span>
-                </div>
-            </div>
-
-            <div class="item">
-                <div>Área de Atuação</div>
-                <div>
-                    <input type="text" name="services" placeholder="Digite os serviços prestados separandos por vírgula!">
-                </div>
-            </div>
-
-            <button type="submit">Salvar</button>
         </section>
     </form>
 {% endblock content %}

@@ -1,6 +1,9 @@
 //importação do file system, modulo interno do node
 const fs = require("fs")
 const data = require("./data.json");
+const { age, date } = require("./utils");
+const { send } = require("process");
+
 
 //criar instrutor
 exports.post = function (req, res) {
@@ -51,28 +54,76 @@ exports.show = function (req, res) {
 
     if (!foundInstuctor) return res.send("Instrutor não cadastrado");
 
-
-    function age(birth) {
-        const today = new Date();
-        const birthDate = new Date(birth);
-
-        let age = today.getFullYear() - birthDate.getFullYear();
-
-        const month = today.getMonth() - birthDate.getMonth();
-
-
-        if (month < 0 || month == 0) {
-
-        }
-    }
-
     const instructor = {
         ...foundInstuctor,
-        age: "",
+        age: age(foundInstuctor.birth),
         services: foundInstuctor.services.split(", "),
-        created_at: "",
+        created_at: new Intl.DateTimeFormat("pt-BR").format(foundInstuctor.created_at),
     }
 
     return res.render("instructors/show", { instructor: instructor });
 }
 
+//editar instrutor
+exports.edit = function (req, res) {
+
+    const { id } = req.params;
+
+    const foundInstuctor = data.instructors.find(function (instructor) {
+        return id == instructor.id;
+    });
+
+    if (!foundInstuctor) return res.send("Instrutor não cadastrado");
+
+    const instructor = {
+        ...foundInstuctor,
+        birth: date(foundInstuctor.birth)
+    }
+
+    return res.render("instructors/edit.njk", { instructor: instructor })
+}
+
+//alterar dados do instrutor
+exports.put = function (req, res) {
+
+    const { id } = req.body;
+
+    const foundInstuctor = data.instructors.find(function (instructor) {
+        return id == instructor.id;
+    });
+
+    if (!foundInstuctor) return res.send("Instrutor não cadastrado");
+
+    const instructor = {
+        ...foundInstuctor,
+        ...req.body,
+        birth: Date.parse(req.body.birth)
+    }
+
+    data.instructors[id - 1] = instructor;
+
+    fs.writeFile("data.json", JSON.stringify(data, null, 2), function (err) {
+        if (err) return res.send("Write error");
+
+        return res.redirect(`/instrutores/${id}`);
+    })
+}
+
+//deletar instrutor
+exports.delete = function (req, res) {
+    const { id } = req.body;
+
+    const filteredInstructors = data.instructors.filter(function (instructor) {
+        return instructor.id != id;
+    });
+
+    data.instructors = filteredInstructors;
+
+    fs.writeFile("data.json", JSON.stringify(data, null, 2), function (err) {
+        if (err) {
+            return res.send("Erro ao deletar instrutor!");
+        }
+
+        return res.redirect("/instrutores");
+    })
+}
