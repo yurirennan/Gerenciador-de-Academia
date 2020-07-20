@@ -1,22 +1,32 @@
 {
+  "members": [],
   "instructors": [
     {
       "id": 1,
       "avatar_url": "https://images.unsplash.com/photo-1550259979-ed79b48d2a30?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=404&q=80",
       "name": "Juliana",
-      "birth": 631929600000,
+      "birth": 852854400000,
       "gender": "F",
       "services": "Personal Trainner",
       "created_at": 1594753680457
     },
     {
       "id": 2,
-      "avatar_url": "https://google.com.br",
+      "avatar_url": "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=750&q=80",
       "name": "PBVieira",
       "birth": 876441600000,
       "gender": "F",
       "services": "Personal",
       "created_at": 1594839823536
+    },
+    {
+      "id": 3,
+      "avatar_url": "https://images.unsplash.com/photo-1546483875-ad9014c88eba?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=674&q=80",
+      "name": "Emilia",
+      "birth": 340848000000,
+      "gender": "F",
+      "services": "Personal Trainner",
+      "created_at": 1594853167402
     }
   ]
 }

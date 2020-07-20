@@ -1,9 +1,37 @@
 //importação do file system, modulo interno do node
 const fs = require("fs")
-const data = require("./data.json");
-const { age, date } = require("./utils");
+const data = require("../data.json");
+const { age, date } = require("../utils");
 const { send } = require("process");
 
+exports.index = function (request, response) {
+    return response.render("instructors/index.njk", { instructors: data.instructors });
+}
+
+//mostrar instrutor
+exports.show = function (req, res) {
+
+    const { id } = req.params;
+
+    const foundInstuctor = data.instructors.find(function (instructor) {
+        return id == instructor.id;
+    });
+
+    if (!foundInstuctor) return res.send("Instrutor não cadastrado");
+
+    const instructor = {
+        ...foundInstuctor,
+        age: age(foundInstuctor.birth),
+        services: foundInstuctor.services.split(", "),
+        created_at: new Intl.DateTimeFormat("pt-BR").format(foundInstuctor.created_at),
+    }
+
+    return res.render("instructors/show", { instructor: instructor });
+}
+
+exports.create = function (req, res) {
+    return res.render("instructors/create.njk");
+}
 
 //criar instrutor
 exports.post = function (req, res) {
@@ -43,27 +71,6 @@ exports.post = function (req, res) {
 
 }
 
-//mostrar instrutor
-exports.show = function (req, res) {
-
-    const { id } = req.params;
-
-    const foundInstuctor = data.instructors.find(function (instructor) {
-        return id == instructor.id;
-    });
-
-    if (!foundInstuctor) return res.send("Instrutor não cadastrado");
-
-    const instructor = {
-        ...foundInstuctor,
-        age: age(foundInstuctor.birth),
-        services: foundInstuctor.services.split(", "),
-        created_at: new Intl.DateTimeFormat("pt-BR").format(foundInstuctor.created_at),
-    }
-
-    return res.render("instructors/show", { instructor: instructor });
-}
-
 //editar instrutor
 exports.edit = function (req, res) {
 
@@ -87,9 +94,13 @@ exports.edit = function (req, res) {
 exports.put = function (req, res) {
 
     const { id } = req.body;
+    let index = 0;
 
-    const foundInstuctor = data.instructors.find(function (instructor) {
-        return id == instructor.id;
+    const foundInstuctor = data.instructors.find(function (instructor, foundIndex) {
+        if (id == instructor.id) {
+            index = foundIndex;
+            return true;
+        }
     });
 
     if (!foundInstuctor) return res.send("Instrutor não cadastrado");
@@ -97,10 +108,11 @@ exports.put = function (req, res) {
     const instructor = {
         ...foundInstuctor,
         ...req.body,
-        birth: Date.parse(req.body.birth)
+        birth: Date.parse(req.body.birth),
+        id: Number(req.body.id)
     }
 
-    data.instructors[id - 1] = instructor;
+    data.instructors[index] = instructor;
 
     fs.writeFile("data.json", JSON.stringify(data, null, 2), function (err) {
         if (err) return res.send("Write error");
@@ -127,3 +139,4 @@ exports.delete = function (req, res) {
         return res.redirect("/instrutores");
     })
 }
+

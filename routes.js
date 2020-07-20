@@ -1,5 +1,6 @@
 const express = require("express");
-const instrutores = require("./instrutores");
+const instrutores = require("./controllers/instrutores");
+const membros = require("./controllers/membros");
 
 const routes = express.Router();
 
@@ -7,26 +8,22 @@ routes.get("/", function (request, response) {
     return response.redirect("/instrutores");
 });
 
-routes.get("/instrutores", function (request, response) {
-    return response.render("instructors/index.njk");
-});
-
+routes.get("/instrutores", instrutores.index);
 routes.post("/instrutores", instrutores.post);
-
-routes.get("/instrutores/cadastro", (req, res) => {
-    return res.render("instructors/create.njk");
-});
-
+routes.get("/instrutores/cadastro", instrutores.create);
 routes.get("/instrutores/:id", instrutores.show);
-
 routes.get("/instrutores/:id/editar", instrutores.edit);
-
-routes.get("/membros", function (request, response) {
-    return response.send("membros");
-});
-
 routes.put("/instrutores", instrutores.put);
-
 routes.delete("/instrutores", instrutores.delete);
+
+
+routes.get("/membros", membros.index);
+routes.get("/membros/cadastro", membros.create);
+routes.get("/membros/:id", membros.show);
+routes.get("/membros/:id/editar", membros.edit);
+routes.post("/membros", membros.post);
+routes.put("/membros", membros.put);
+routes.delete("/membros", membros.delete);
+
 
 module.exports = routes
