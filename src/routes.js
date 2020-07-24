@@ -1,6 +1,6 @@
 const express = require("express");
-const instrutores = require("./controllers/instrutores");
-const membros = require("./controllers/membros");
+const instrutores = require("./app/controllers/instrutores");
+const membros = require("./app/controllers/membros");
 
 const routes = express.Router();
 
