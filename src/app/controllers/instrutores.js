@@ -1,9 +1,12 @@
 const { age, date } = require("../../lib/utils");
-const db = require("../../config/db");
+const model = require("../models/instructor");
+
 
 module.exports = {
     index(req, res) {
-        return res.render("instructors/index.njk");
+        model.all(function (instructors) {
+            return res.render("instructors/index.njk", { instructors });
+        })
 
     },
     create(req, res) {
@@ -19,42 +22,31 @@ module.exports = {
             }
         }
 
-        const query = `
-            INSERT INTO instructors (
-                avatar_url,
-                name,
-                birth,
-                gender,
-                services,
-                created_at
-            ) VALUES ($1, $2, $3, $4, $5, $6)
-            RETURNING id
-        `;
-
-        const values = [
-            req.body.avatar_url,
-            req.body.name,
-            date(req.body.birth).iso,
-            req.body.gender,
-            req.body.services,
-            date(Date.now()).iso
-        ]
-
-
-        db.query(query, values, function (err, results) {
-            if (err) {
-                res.send("Database Error!")
-            }
-
-            return res.redirect(`/instrutores/${results.rows[0].id}`);
+        model.create(req.body, function (instructor) {
+            return res.redirect(`/instrutores/${instructor.id}`);
         });
 
     },
     show(req, res) {
-        return
+        model.find(req.params.id, function (instructor) {
+            if (!instructor) return res.send("Instrutor não encontrado");
+
+            instructor.age = age(instructor.birth);
+            instructor.services = instructor.services.split(", ");
+            instructor.created_at = date(instructor.created_at).format
+
+            return res.render("../views/instructors/show", { instructor })
+        });
     },
     edit(req, res) {
-        return
+
+        model.find(req.params.id, function (instructor) {
+            if (!instructor) return res.send("Instrutor não encontrado");
+
+            instructor.birth = date(instructor.birth).iso;
+
+            return res.render("../views/instructors/edit", { instructor })
+        });
     },
     put(req, res) {
         const keys = Object.keys(req.body);
@@ -64,10 +56,16 @@ module.exports = {
                 return res.send("Por favor, preencha todos so campos corretamente!");
             }
         }
-        return
+
+        model.update(req.body, function () {
+            return res.redirect(`/instrutores/${req.body.id}`);
+        })
+
     },
     delete(req, res) {
-        return
+        model.delete(req.body.id, function () {
+            return res.redirect("/instrutores");
+        });
     },
 }
 

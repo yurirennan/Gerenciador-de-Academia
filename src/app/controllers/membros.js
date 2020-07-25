@@ -1,8 +1,12 @@
 const { age, date } = require("../../lib/utils");
+const model = require("../models/member");
+
 
 module.exports = {
     index(req, res) {
-        return res.render("members/index.njk");
+        model.all(function (members) {
+            return res.render("members/index.njk", { members });
+        })
 
     },
     create(req, res) {
@@ -18,13 +22,29 @@ module.exports = {
             }
         }
 
+        model.create(req.body, function (member) {
+            return res.redirect(`/membros/${member.id}`);
+        });
 
     },
     show(req, res) {
-        return
+        model.find(req.params.id, function (member) {
+            if (!member) return res.send("Instrutor não encontrado");
+
+            member.birth = date(member.birth).birthDay;
+
+            return res.render("../views/members/show", { member })
+        });
     },
     edit(req, res) {
-        return
+
+        model.find(req.params.id, function (member) {
+            if (!member) return res.send("Instrutor não encontrado");
+
+            member.birth = date(member.birth).iso;
+
+            return res.render("../views/members/edit", { member })
+        });
     },
     put(req, res) {
         const keys = Object.keys(req.body);
@@ -34,12 +54,17 @@ module.exports = {
                 return res.send("Por favor, preencha todos so campos corretamente!");
             }
         }
-        return
+
+        model.update(req.body, function () {
+            return res.redirect(`/membros/${req.body.id}`);
+        })
+
     },
     delete(req, res) {
-        return
+        model.delete(req.body.id, function () {
+            return res.redirect("/membros");
+        });
     },
 }
-
 
 
