@@ -10,7 +10,10 @@ module.exports = {
 
     },
     create(req, res) {
-        return res.render("members/create.njk");
+
+        model.instructorSelectOption(function (options) {
+            return res.render("members/create.njk", { instructorOptions: options });
+        });
 
     },
     post(req, res) {
@@ -43,8 +46,11 @@ module.exports = {
 
             member.birth = date(member.birth).iso;
 
-            return res.render("../views/members/edit", { member })
+            model.instructorSelectOption(function (options) {
+                return res.render("members/edit", { member, instructorOptions: options });
+            });
         });
+
     },
     put(req, res) {
         const keys = Object.keys(req.body);
