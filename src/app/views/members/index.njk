@@ -2,7 +2,15 @@
 
 {% block content %}
     <div class="card table-container">
-        <a href="/membros/cadastro">Cadastrar Membro</a>
+        <div class="header">
+            <a class="button" href="/membros/cadastro">Novo Membro</a>
+            <form action="/membros" method="Get">
+                <input type="text" name="filter" placeholder="Nome ou Email" value="{{filter}}">
+                <button type="submit">Filtrar</button>
+            </form>
+
+        </div>
+
         <table width="100%">
             <thead>
                 <tr>
@@ -30,5 +38,7 @@
                 {% endfor %}
             </tbody>
         </table>
+        <div class="pagination" data-page="{{pagination.page}}" data-total="{{pagination.total}}" data-filter="{{pagination.filter}}"></div>
+
     </div>
 {% endblock content %}

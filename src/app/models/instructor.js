@@ -1,5 +1,6 @@
 const { age, date } = require("../../lib/utils");
 const db = require("../../config/db");
+const { off } = require("../../config/db");
 
 module.exports = {
     all(callback) {
@@ -7,11 +8,13 @@ module.exports = {
                 FROM INSTRUCTORS 
                 LEFT JOIN members ON(instructors.id = members.instructor_id)
                 GROUP BY instructors.id
-                ORDER BY name ASC`, function (err, results) {
-            if (err) throw `Database error: ${err}`;
+                ORDER BY name ASC`,
 
-            callback(results.rows);
-        });
+            function (err, results) {
+                if (err) throw `Database error: ${err}`;
+
+                callback(results.rows);
+            });
     },
 
     create(data, callback) {
@@ -52,6 +55,22 @@ module.exports = {
         });
     },
 
+    findBy(filter, callback) {
+        db.query(`SELECT instructors.*, count(members) AS total_students 
+                FROM INSTRUCTORS 
+                LEFT JOIN members ON(instructors.id = members.instructor_id)
+                WHERE instructors.name ILIKE '%${filter}%'
+                OR instructors.services ILIKE '%${filter}%'
+                GROUP BY instructors.id
+                ORDER BY name ASC`,
+
+            function (err, results) {
+                if (err) throw `Database error: ${err}`;
+
+                callback(results.rows);
+            });
+    },
+
     update(data, callback) {
         const query = `
         UPDATE instructors SET 
@@ -86,5 +105,37 @@ module.exports = {
 
             return callback();
         })
+    },
+
+    paginate(params) {
+        const { filter, limit, offset, callback } = params;
+
+        let filterQuery = ""
+        let subQuery = `(SELECT count(*) AS total FROM instructors)`
+
+        if (filter) {
+            filterQuery = `
+        WHERE instructors.name ILIKE '%${filter}%'
+        OR instructors.services ILIKE '%${filter}%'
+        `
+
+            subQuery = `(SELECT count(*) AS total FROM instructors ${filterQuery})`
+        }
+
+        let query = `
+        SELECT instructors.*, ${subQuery}, count(members) AS total_students 
+        FROM instructors
+        LEFT JOIN members ON (instructors.id = members.instructor_id)
+        ${filterQuery}
+        GROUP BY instructors.id
+        ORDER BY name ASC
+        LIMIT $1 OFFSET $2
+        `;
+
+        db.query(query, [limit, offset], function (err, results) {
+            if (err) throw `DataBase error: ${err}`
+
+            callback(results.rows);
+        });
     }
 }

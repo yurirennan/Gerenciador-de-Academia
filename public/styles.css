@@ -3,7 +3,7 @@
 /* VARIAVEIS*/
 :root {
     --primary-color: #282a36;
-    --secondary-calor: #F7DF1E
+    --secondary-color: #F7DF1E
 }
 
 * {
@@ -141,7 +141,7 @@ header {
 
 .details .item span {
     padding: 8px 16px;
-    background-color: var(--secondary-calor);
+    background-color: var(--secondary-color);
     border-radius: 16px;
     color: rgb(20, 18, 18);
     margin-right: 4px;
@@ -263,4 +263,67 @@ tbody tr td:last-child a,
 .table-container thead tr th:last-child,
 td:last-child {
     text-align: center;
+}
+
+/* Filtros */
+.table-container .header {
+    margin-bottom: 32px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+}
+
+.table-container .header a{
+    margin: 0;
+    width: 120px;
+}
+
+.table-container .header form {
+    display: grid;
+    grid-template-columns: 1fr 120px;
+    align-items: center;
+    grid-gap: 8px;
+}
+
+.table-container .header form input {
+    border: 1px solid #eee;
+    padding: 4px 8px;
+    box-sizing: border-box;
+}
+
+.table-container .header form button {
+    margin: 0;
+    cursor: pointer;
+}
+
+
+/* Pagination */
+
+.table-container {
+    display: grid;
+    grid-template: 64px 1fr 16px / 1fr;
+}
+
+.table-container .header {
+    margin: 0;
+    align-self: start;
+}
+
+.table-container .pagination {
+    margin: 0;
+    align-self: end;
+    justify-self: center;
+}
+
+.pagination a,
+.pagination span{
+    color: var(--primary-color);
+    text-decoration: none;
+    margin-right: 16px;
+}
+
+.pagination a:hover{
+    color: var(--secondary-color);
+    filter: brightness(0.7);
+    border-bottom: 1px solid var(--primary-color);
 }

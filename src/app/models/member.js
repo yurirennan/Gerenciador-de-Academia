@@ -100,11 +100,42 @@ module.exports = {
             return callback();
         })
     },
+
     instructorSelectOption(callback) {
         db.query(`SELECT name, id FROM instructors`, function (err, results) {
             if (err) throw `Database error: ${err}`;
 
             callback(results.rows);
         })
+    },
+
+    paginate(params) {
+        const { filter, limit, offset, callback } = params;
+
+        let filterQuery = ""
+        let subQuery = `(SELECT count(*) AS total FROM members)`
+
+        if (filter) {
+            filterQuery = `
+        WHERE members.name ILIKE '%${filter}%'
+        OR members.email ILIKE '%${filter}%'
+        `
+
+            subQuery = `(SELECT count(*) AS total FROM members ${filterQuery})`
+        }
+
+        let query = `
+        SELECT members.*, ${subQuery} 
+        FROM members
+        ${filterQuery}
+        ORDER BY name ASC
+        LIMIT $1 OFFSET $2
+        `;
+
+        db.query(query, [limit, offset], function (err, results) {
+            if (err) throw `DataBase error: ${err}`
+
+            callback(results.rows);
+        });
     }
 }
